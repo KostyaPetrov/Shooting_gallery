@@ -28,7 +28,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping
+    @PostMapping(name="/user")
     public ResponseEntity<ResponseResult<Object>> add(@RequestBody User user){
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
