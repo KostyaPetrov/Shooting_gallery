@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseEnterDTO;
 import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseResult;
 import ru.konstantinpetrov.web.lab4.entity.User;
 import ru.konstantinpetrov.web.lab4.entity.UserDetailsImpl;
@@ -28,14 +29,15 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    public ResponseEntity<ResponseResult<Object>> add(@RequestBody User user){
+    public ResponseEntity<ResponseEnterDTO> add(@RequestBody User user){
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             this.userService.add(user);
-            return new ResponseEntity<>(new ResponseResult<>(user, null),
+//            new ResponseResult<>(user, null)
+            return new ResponseEntity<>(new ResponseEnterDTO(true),
                     HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(new ResponseResult<>(null, e.getMessage()),
+            return new ResponseEntity<>(new ResponseEnterDTO(false),
                     HttpStatus.BAD_REQUEST);
         }
     }
@@ -65,15 +67,15 @@ public class UserController {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<ResponseResult<Object>> auth(Authentication authentication){
+    public ResponseEntity<ResponseEnterDTO> auth(Authentication authentication){
         if(authentication != null && authentication.isAuthenticated()){
-            long id = ((UserDetailsImpl)authentication.getPrincipal()).getId();
-            return new ResponseEntity<>(new ResponseResult<>(id, null),
+            String login = ((UserDetailsImpl)authentication.getPrincipal()).getUsername();
+            System.out.println("Login: "+login);
+            return new ResponseEntity<>(new ResponseEnterDTO(true),
                     HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(new ResponseResult<>(null,
-                    "User does not exists"), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseEnterDTO(false), HttpStatus.OK);
         }
     }
 
