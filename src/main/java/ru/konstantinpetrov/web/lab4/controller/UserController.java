@@ -12,7 +12,6 @@ import ru.konstantinpetrov.web.lab4.entity.UserDetailsImpl;
 import ru.konstantinpetrov.web.lab4.service.UserService;
 
 @RestController
-@RequestMapping("/user")
 public class UserController {
     private UserService userService;
 
@@ -28,7 +27,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping(name="/user")
+    @PostMapping(path = "/users")
     public ResponseEntity<ResponseResult<Object>> add(@RequestBody User user){
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -65,7 +64,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/auth")
+    @PostMapping(path = "/login")
     public ResponseEntity<ResponseResult<Object>> auth(Authentication authentication){
         if(authentication != null && authentication.isAuthenticated()){
             long id = ((UserDetailsImpl)authentication.getPrincipal()).getId();
