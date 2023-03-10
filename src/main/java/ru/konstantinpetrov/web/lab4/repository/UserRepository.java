@@ -2,9 +2,13 @@ package ru.konstantinpetrov.web.lab4.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.konstantinpetrov.web.lab4.entitie.Users;
+import ru.konstantinpetrov.web.lab4.entity.User;
+
+import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<Users, String> {
-    Users findByLogin(String login);
+@Transactional
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByLogin(String clientName);
 }
