@@ -20,13 +20,18 @@ public class EnterController {
 
 
 
-    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void registration(@RequestBody UserDTO userDTO){
+    @PostMapping(value = "/users")
+    public String registration(@RequestBody UserDTO userDTO){
 
-        service.registrate(userDTO);
+        boolean res=service.registrate(userDTO);
+        if(res){
+            return "All ok";
+        }else{
+            return "Fail";
+        }
     }
 
-    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login")
     public void authentication(@RequestBody UserDTO userDTO){
         service.authentic(userDTO);
     }

@@ -1,34 +1,38 @@
 package ru.konstantinpetrov.web.lab4.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.konstantinpetrov.web.lab4.entitie.Users;
+import ru.konstantinpetrov.web.lab4.repository.UserRepository;
 
 
 @Service
-@RequiredArgsConstructor
-public class UsersDetails implements UserDetailsService {
+@AllArgsConstructor
+public class UsersDet implements UserDetailsService {
 
-    private final UsersService service;
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        Users users = service.getUserByLogin(login);
+//        Users users = service.getUserByLogin(login);
+        Users users = userRepository.findByLogin(login);
 
+        if(users==null){
+            System.out.println("I do not now how this user: "+login);
+            throw new UsernameNotFoundException("Unknown user: "+login);
+        }
 
-        return User
-                .withUsername(login)
+        return User.builder()
+                .username(users.getLogin())
                 .password(users.getPassword())
                 .roles("USER")
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(false)
                 .build();
     }
 

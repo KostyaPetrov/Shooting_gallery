@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class UsersService implements UserDetailsService {
+public class UsersService {
     private final UserRepository userRepository;
     private ModelMapper modelMapper;
     private List<Users> userList =new ArrayList<>();
@@ -51,21 +51,18 @@ public class UsersService implements UserDetailsService {
     private UserDTO convertToUserDto(Users user) {
         return modelMapper.map(user, UserDTO.class);
     }
-
     public Users getUserByLogin(String login) {
-        try {
-            return userRepository.findById(login).get();
-        }catch (EntityNotFoundException e){
-            throw new OwnerNotFoundException(login);
-        }
+
+        return userRepository.findByLogin(login);
+
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        Users user = getUserByLogin(login);
-        if (Objects.isNull(user)) {
-            throw new UsernameNotFoundException(String.format("User %s is not found", login));
-        }
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), true, true, true, true, new HashSet<>());
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+//        Users user = getUserByLogin(login);
+//        if (Objects.isNull(user)) {
+//            throw new UsernameNotFoundException(String.format("User %s is not found", login));
+//        }
+//        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), true, true, true, true, new HashSet<>());
+//    }
 }
