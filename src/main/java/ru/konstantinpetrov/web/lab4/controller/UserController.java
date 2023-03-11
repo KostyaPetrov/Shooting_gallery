@@ -72,6 +72,7 @@ public class UserController {
 //        }
 //    }
 
+    @CrossOrigin
     @GetMapping(path="all-data")
     public ResponseEntity<ResponseDataDTO<Object>> allData(){
         ArrayList<Coordinate> coordinates=new ArrayList<>();
