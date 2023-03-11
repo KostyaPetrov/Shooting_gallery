@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 import axios from "axios";
 
-const CREATED_CODE = 201
+// const CREATED_CODE = 201
 const SUCCESS_CODE = 200
 
 let store = createStore({
@@ -39,9 +39,6 @@ let store = createStore({
         LOGIN({commit}, payload) {
             return new Promise((resolve, reject) => {
                 axios.post(process.env.VUE_APP_BACKEND_URL + '/login', {}, {
-                    headers: {
-                        "Access-Control-Allow-Origin": "*"
-                    },
                     auth: {
                         username: payload.login,
                         password: payload.password
@@ -84,45 +81,44 @@ let store = createStore({
                 axios.post(process.env.VUE_APP_BACKEND_URL + '/compile', {
                     "x": payload.x,
                     "y": payload.y,
-                    "radius": payload.radius,
-                    "is_hit": Boolean(payload.x % 2)  // TODO: заменить!
+                    "radius": payload.radius
+                }, {auth: this.authData})
+                .then((response) => {
+                    if (response.status === SUCCESS_CODE){
+                        commit('ADD_TABLE_DATA', response.data)
+                        resolve({isSuccess: true, data: response.data})
+                    } else {
+                        console.log(response.data)
+                        resolve({isSuccess: false, data: response.data})
+                    }
                 })
-                    .then((response) => {
-                        if (response.status === CREATED_CODE){
-                            commit('ADD_TABLE_DATA', response.data)
-                            resolve({isSuccess: true, data: response.data})
-                        } else {
-                            console.log(response.data)
-                            resolve({isSuccess: false, data: response.data})
-                        }
-                    })
-                    .catch((response) => {
-                        console.log(response.response.data)
-                        reject({isSuccess: false, data: response.response.data})
-                    })
+                .catch((response) => {
+                    console.log(response.response.data)
+                    reject({isSuccess: false, data: response.response.data})
+                })
             })
         },
         GET_ALL_DATA({commit}) {
             return new Promise((resolve, reject) => {
-                axios.get(process.env.VUE_APP_BACKEND_URL + '/all-data')
-                    .then((response) => {
-                        if (response.status === SUCCESS_CODE){
-                            commit('SET_TABLE_DATA', response.data)
-                            resolve({isSuccess: true, data: this.state.tableData})
-                        } else {
-                            resolve({isSuccess: false, data: this.state.tableData})
-                        }
-                    })
-                    .catch((response) => {
-                        console.log(response.status + " - " + response.response.data)
-                        reject({isSuccess: false, data: this.state.tableData})
-                    })
+                axios.get(process.env.VUE_APP_BACKEND_URL + '/all-data', {auth: this.authData})
+                .then((response) => {
+                    if (response.status === SUCCESS_CODE){
+                        commit('SET_TABLE_DATA', response.data)
+                        resolve({isSuccess: true, data: this.state.tableData})
+                    } else {
+                        resolve({isSuccess: false, data: this.state.tableData})
+                    }
+                })
+                .catch((response) => {
+                    console.log(response.status + " - " + response.response.data)
+                    reject({isSuccess: false, data: this.state.tableData})
+                })
             })
         },
     },
     getters: {
-        ACCESS_TOKEN(state) {
-            return state.accessToken
+        IS_AUTHED(state) {
+            return Boolean(state.authData)
         },
         TABLE_DATA(state) {
             return state.tableData

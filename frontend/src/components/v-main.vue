@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     ...mapActions(['SEND_DATA']),
-    ...mapGetters(['ACCESS_TOKEN']),
+    ...mapGetters(['IS_AUTHED']),
     setIsSuccessSendData(value) {
       this.is_success_send_data = value
     },
@@ -50,27 +50,25 @@ export default {
       console.log(`Sending data ${x} ${y} ${radius} by VMain`)
 
       this.SEND_DATA({x: x, y: y, radius: radius})
-          .then(
-              result => {
-                this.$refs.controls.setIsLoading(false)
+        .then(
+            result => {
+              this.$refs.controls.setIsLoading(false)
 
-                if (result) {
-                  this.$refs.table.refreshData()
-                } else {
-                  self.setIsSuccessSendData(false)
-                }
-              },
-              () => {
-                this.$refs.controls.setIsLoading(false)
+              if (result) {
+                this.$refs.table.refreshData()
+              } else {
                 self.setIsSuccessSendData(false)
               }
-          );
-
-      // this.$refs.table.getAllData()
+            },
+            () => {
+              this.$refs.controls.setIsLoading(false)
+              self.setIsSuccessSendData(false)
+            }
+        );
     }
   },
   mounted() {
-    if (!this.ACCESS_TOKEN()) {
+    if (!this.IS_AUTHED()) {
       router.push("sign-in")
     }
   },
