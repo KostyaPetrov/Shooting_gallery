@@ -7,13 +7,16 @@ const SUCCESS_CODE = 200
 let store = createStore({
     state () {
         return {
-            accessToken: null,
+            authData: null,
             tableData: Array(),
         }
     },
     mutations: {
-        SET_ACCESS_TOKEN (state, accessToken) {
-            state.accessToken = accessToken
+        SET_AUTH_DATA (state, login, password) {
+            state.authData = {
+                username: login,
+                password: password
+            }
         },
         ADD_TABLE_DATA (state, value) {
             state.tableData.push({
@@ -35,39 +38,45 @@ let store = createStore({
     actions: {
         LOGIN({commit}, payload) {
             return new Promise((resolve, reject) => {
-                axios.post(process.env.VUE_APP_BACKEND_URL + '/login', {
-                    email: payload.login,
-                    password: payload.password
+                axios.post(process.env.VUE_APP_BACKEND_URL + '/login', {}, {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    auth: {
+                        username: payload.login,
+                        password: payload.password
+                    }
                 })
-                    .then((response) => {
-                        commit('SET_ACCESS_TOKEN', response.data.accessToken)
-                        resolve(response.status === 200)
-                    })
-                    .catch((response) => {
-                        console.log(response.response.data)
-                        reject(false)
-                    })
+                .then((response) => {
+                    commit('SET_AUTH_DATA', payload.login, payload.password)
+                    resolve(response.status === SUCCESS_CODE)
+                })
+                .catch((response) => {
+                    console.log(response)
+                    console.log(response.response.data)
+                    reject(false)
+                })
             })
         },
         SIGN_UP({commit}, payload) {
             return new Promise((resolve, reject) => {
                 axios.post(process.env.VUE_APP_BACKEND_URL + '/users', {
-                    email: payload.login,
+                    login: payload.login,
                     password: payload.password
                 })
-                    .then((response) => {
-                        if (response.status === CREATED_CODE){
-                            commit('SET_ACCESS_TOKEN', response.data.accessToken)
-                            resolve({isSuccess: true, msg: ""})
-                        } else {
-                            console.log(response.data)
-                            resolve({isSuccess: false, msg: response.data})
-                        }
-                    })
-                    .catch((response) => {
-                        console.log(response.response.data)
-                        reject({isSuccess: false, msg: response.response.data})
-                    })
+                .then((response) => {
+                    if (response.status === SUCCESS_CODE){
+                        commit('SET_AUTH_DATA', payload.login, payload.password)
+                        resolve({isSuccess: true, msg: ""})
+                    } else {
+                        console.log(response.data)
+                        resolve({isSuccess: false, msg: response.data})
+                    }
+                })
+                .catch((response) => {
+                    console.log(response.response.data)
+                    reject({isSuccess: false, msg: response.response.data})
+                })
             })
         },
         SEND_DATA({commit}, payload) {

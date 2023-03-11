@@ -66,6 +66,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin
     @PostMapping(path = "/login")
     public ResponseEntity<ResponseEnterDTO> auth(Authentication authentication){
         if(authentication != null && authentication.isAuthenticated()){
