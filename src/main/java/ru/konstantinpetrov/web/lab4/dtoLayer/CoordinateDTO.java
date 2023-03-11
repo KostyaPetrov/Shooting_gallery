@@ -6,5 +6,6 @@ import lombok.Data;
 public class CoordinateDTO {
     private Double x;
     private Double y;
-    private Double r;
+    private Double radius;
+    private String login;
 }

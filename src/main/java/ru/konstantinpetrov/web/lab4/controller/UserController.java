@@ -45,7 +45,7 @@ public class UserController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<ResponseResult<Object>> get(@PathVariable long id){
         try {
-            User user = this.userService.get(id);
+            User user = this.userService.getById(id);
             return new ResponseEntity<>(new ResponseResult<>(user, null),
                     HttpStatus.OK);
         } catch (Exception e) {

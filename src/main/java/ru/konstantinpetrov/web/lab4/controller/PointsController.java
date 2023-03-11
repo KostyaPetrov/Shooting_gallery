@@ -1,6 +1,7 @@
 package ru.konstantinpetrov.web.lab4.controller;
 
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -12,7 +13,9 @@ public class PointsController {
 
 
     @PostMapping(value = "/compile")
-    public void attempt(@RequestBody CoordinateDTO coordinateDTO, @RequestHeader(value = "Authorization") String header){
+    public CoordinateDTO attempt(@RequestBody CoordinateDTO coordinateDTO, Authentication authentication){
+        coordinateDTO.setLogin(authentication.getName());
+        return coordinateDTO;
 
         //TODO переделать в объект ответа
     }

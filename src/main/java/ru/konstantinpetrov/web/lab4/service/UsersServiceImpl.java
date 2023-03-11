@@ -46,14 +46,6 @@ public class UsersServiceImpl implements UserService {
 
     }*/
 
-//    @Override
-//    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-//        Users user = getUserByLogin(login);
-//        if (Objects.isNull(user)) {
-//            throw new UsernameNotFoundException(String.format("User %s is not found", login));
-//        }
-//        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), true, true, true, true, new HashSet<>());
-//    }
 
     private UserRepository userRepository;
 
@@ -63,23 +55,30 @@ public class UsersServiceImpl implements UserService {
     }
 
     @Override
-    public void add(User client) {
+    public void add(User user) {
         try {
-            this.userRepository.save(client);
+            this.userRepository.save(user);
         } catch (Exception e) {
             throw new IllegalArgumentException("Client with current login is already exists!");
         }
     }
 
     @Override
-    public User get(long id) {
+    public User getById(long id) {
         return this.userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("User does not exists"));
     }
 
     @Override
+    public User getByLogin(String login){
+        return this.userRepository.findByLogin(login).orElseThrow(
+                () -> new IllegalArgumentException("User does not exists"));
+    }
+
+
+    @Override
     public User delete(long id) {
-        User client = this.get(id);
+        User client = this.getById(id);
         this.userRepository.deleteById(id);
         return client;
     }
