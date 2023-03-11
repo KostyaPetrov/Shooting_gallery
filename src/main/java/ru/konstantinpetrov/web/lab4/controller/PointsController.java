@@ -7,9 +7,6 @@ import ru.konstantinpetrov.web.lab4.dtoLayer.CoordinateDTO;
 
 @RestController
 public class PointsController {
-
-
-    @CrossOrigin
     @PostMapping(value = "/compile")
     public CoordinateDTO attempt(@RequestBody CoordinateDTO coordinateDTO, Authentication authentication){
         coordinateDTO.setLogin(authentication.getName());
@@ -17,8 +14,4 @@ public class PointsController {
 
         //TODO переделать в объект ответа
     }
-
-
-
-    
 }

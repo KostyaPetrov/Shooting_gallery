@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import ru.konstantinpetrov.web.lab4.dtoLayer.CoordinateDTO;
 import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseDataDTO;
 import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseEnterDTO;
 import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseResult;
@@ -33,7 +34,6 @@ public class UserController {
     }
 
 
-    @CrossOrigin
     @PostMapping(path = "/users")
     public ResponseEntity<ResponseEnterDTO> add(@RequestBody User user){
         try {
@@ -72,19 +72,17 @@ public class UserController {
 //        }
 //    }
 
-    @CrossOrigin
-    @GetMapping(path="all-data")
+    @GetMapping(path="/all-data")
     public ResponseEntity<ResponseDataDTO<Object>> allData(){
         ArrayList<Coordinate> coordinates=new ArrayList<>();
         coordinates.add(new Coordinate(1.0,1.5,2.0, true));
         coordinates.add(new Coordinate(2.0,3.5,4.0, false));
         coordinates.add(new Coordinate(0.0,2.5,0.0, true));
 
-        return  new ResponseEntity<>(new ResponseDataDTO(coordinates),
+        return new ResponseEntity<>(new ResponseDataDTO(coordinates),
                 HttpStatus.OK);
     }
 
-    @CrossOrigin
     @PostMapping(path = "/login")
     public ResponseEntity<ResponseEnterDTO> auth(Authentication authentication){
         if(authentication != null && authentication.isAuthenticated()){
@@ -97,5 +95,4 @@ public class UserController {
             return new ResponseEntity<>(new ResponseEnterDTO(false), HttpStatus.OK);
         }
     }
-
 }

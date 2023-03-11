@@ -28,13 +28,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.cors().and().csrf().disable();
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login").authenticated()
-                .antMatchers(HttpMethod.POST, "/compile").authenticated()
-                //.antMatchers(HttpMethod.GET, "/auth").authenticated()
-                .anyRequest().permitAll()
-                .and().httpBasic();
+        .antMatchers(HttpMethod.POST, "/compile").authenticated()
+        .antMatchers(HttpMethod.POST, "/login").authenticated()
+        //.antMatchers(HttpMethod.GET, "/auth").authenticated()
+        .anyRequest().permitAll()
+        .and().httpBasic();
     }
 
     @Bean
