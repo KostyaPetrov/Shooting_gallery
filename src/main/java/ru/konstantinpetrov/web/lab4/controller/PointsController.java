@@ -20,4 +20,7 @@ public class PointsController {
         //TODO переделать в объект ответа
     }
 
+
+
+    
 }
