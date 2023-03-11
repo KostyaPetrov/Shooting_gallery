@@ -47,23 +47,23 @@ export default {
       this.is_success_send_data = value
     },
     sendData(x, y, radius) {
-      console.log(`Sending data ${x} ${y} ${radius} by VMain`)
+      const self = this
 
       this.SEND_DATA({x: x, y: y, radius: radius})
         .then(
-            result => {
-              this.$refs.controls.setIsLoading(false)
+          result => {
+            this.$refs.controls.setIsLoading(false)
 
-              if (result) {
-                this.$refs.table.refreshData()
-              } else {
-                self.setIsSuccessSendData(false)
-              }
-            },
-            () => {
-              this.$refs.controls.setIsLoading(false)
+            if (result) {
+              this.$refs.table.refreshData()
+            } else {
               self.setIsSuccessSendData(false)
             }
+          },
+          () => {
+            this.$refs.controls.setIsLoading(false)
+            self.setIsSuccessSendData(false)
+          }
         );
     }
   },

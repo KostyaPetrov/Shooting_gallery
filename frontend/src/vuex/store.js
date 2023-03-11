@@ -12,11 +12,8 @@ let store = createStore({
         }
     },
     mutations: {
-        SET_AUTH_DATA (state, login, password) {
-            state.authData = {
-                username: login,
-                password: password
-            }
+        SET_AUTH_DATA (state, auth_data) {
+            state.authData = auth_data
         },
         ADD_TABLE_DATA (state, value) {
             state.tableData.push({
@@ -37,15 +34,17 @@ let store = createStore({
     },
     actions: {
         LOGIN({commit}, payload) {
+            const auth_data = {
+                username: payload.login,
+                password: payload.password
+            }
+            console.log(payload)
             return new Promise((resolve, reject) => {
                 axios.post(process.env.VUE_APP_BACKEND_URL + '/login', {}, {
-                    auth: {
-                        username: payload.login,
-                        password: payload.password
-                    }
+                    auth: auth_data
                 })
                 .then((response) => {
-                    commit('SET_AUTH_DATA', payload.login, payload.password)
+                    commit('SET_AUTH_DATA', auth_data)
                     resolve(response.status === SUCCESS_CODE)
                 })
                 .catch((response) => {
@@ -56,14 +55,18 @@ let store = createStore({
             })
         },
         SIGN_UP({commit}, payload) {
+            const auth_data = {
+                username: payload.login,
+                password: payload.password
+            }
             return new Promise((resolve, reject) => {
                 axios.post(process.env.VUE_APP_BACKEND_URL + '/users', {
-                    login: payload.login,
-                    password: payload.password
+                    login: auth_data.username,
+                    password: auth_data.password
                 })
                 .then((response) => {
                     if (response.status === SUCCESS_CODE){
-                        commit('SET_AUTH_DATA', payload.login, payload.password)
+                        commit('SET_AUTH_DATA', auth_data)
                         resolve({isSuccess: true, msg: ""})
                     } else {
                         console.log(response.data)
@@ -77,12 +80,13 @@ let store = createStore({
             })
         },
         SEND_DATA({commit}, payload) {
+            console.log(this.state.authData)
             return new Promise((resolve, reject) => {
                 axios.post(process.env.VUE_APP_BACKEND_URL + '/compile', {
                     "x": payload.x,
                     "y": payload.y,
                     "radius": payload.radius
-                }, {auth: this.authData})
+                }, {auth: this.state.authData})
                 .then((response) => {
                     if (response.status === SUCCESS_CODE){
                         commit('ADD_TABLE_DATA', response.data)
@@ -93,7 +97,6 @@ let store = createStore({
                     }
                 })
                 .catch((response) => {
-                    console.log(response.response.data)
                     reject({isSuccess: false, data: response.response.data})
                 })
             })
@@ -103,7 +106,7 @@ let store = createStore({
                 axios.get(process.env.VUE_APP_BACKEND_URL + '/all-data', {auth: this.authData})
                 .then((response) => {
                     if (response.status === SUCCESS_CODE){
-                        commit('SET_TABLE_DATA', response.data)
+                        commit('SET_TABLE_DATA', response.data.items)
                         resolve({isSuccess: true, data: this.state.tableData})
                     } else {
                         resolve({isSuccess: false, data: this.state.tableData})
