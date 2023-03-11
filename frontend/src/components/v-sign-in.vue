@@ -63,9 +63,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'LOGIN'
-    ]),
+    ...mapActions(['LOGIN']),
     setIsSuccessLogin(value) {
       this.is_success_login = value
     },

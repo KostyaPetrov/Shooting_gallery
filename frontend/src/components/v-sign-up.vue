@@ -86,9 +86,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'SIGN_UP'
-    ]),
+    ...mapActions(['SIGN_UP']),
     goToLogin() {
       router.push("sign-in")
     },

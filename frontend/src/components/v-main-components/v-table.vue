@@ -5,7 +5,7 @@
     <el-table-column prop="radius" label="Радиус"/>
     <el-table-column prop="is_hit" label="Результат">
       <template #default="scope">
-          <Select v-if="scope.row.result === true" style="width: 1em; height: 1em"/>
+          <Select v-if="scope.row.is_hit === true" style="width: 1em; height: 1em"/>
           <CloseBold v-else style="width: 1em; height: 1em"/>
       </template>
     </el-table-column>
