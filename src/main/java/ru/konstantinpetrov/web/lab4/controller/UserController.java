@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.konstantinpetrov.web.lab4.dtoLayer.CoordinateDTO;
 import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseDataDTO;
 import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseEnterDTO;
-import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseResult;
 import ru.konstantinpetrov.web.lab4.entity.Coordinate;
 import ru.konstantinpetrov.web.lab4.entity.User;
 import ru.konstantinpetrov.web.lab4.entity.UserDetailsImpl;
@@ -35,10 +34,10 @@ public class UserController {
 
 
     @PostMapping(path = "/users")
-    public ResponseEntity<ResponseEnterDTO> add(@RequestBody User user){
+    public ResponseEntity<ResponseEnterDTO> addUser(@RequestBody User user){
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            this.userService.add(user);
+            this.userService.addUser(user);
             return new ResponseEntity<>(new ResponseEnterDTO(true),
                     HttpStatus.OK);
         } catch (Exception e) {
@@ -72,16 +71,7 @@ public class UserController {
 //        }
 //    }
 
-    @GetMapping(path="/all-data")
-    public ResponseEntity<ResponseDataDTO<Object>> allData(){
-        ArrayList<Coordinate> coordinates=new ArrayList<>();
-        coordinates.add(new Coordinate(1.0,1.5,2.0, true));
-        coordinates.add(new Coordinate(2.0,3.5,4.0, false));
-        coordinates.add(new Coordinate(0.0,2.5,0.0, true));
 
-        return new ResponseEntity<>(new ResponseDataDTO(coordinates),
-                HttpStatus.OK);
-    }
 
     @PostMapping(path = "/login")
     public ResponseEntity<ResponseEnterDTO> auth(Authentication authentication){

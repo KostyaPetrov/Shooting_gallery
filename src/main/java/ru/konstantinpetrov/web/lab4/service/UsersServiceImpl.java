@@ -2,8 +2,13 @@ package ru.konstantinpetrov.web.lab4.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.konstantinpetrov.web.lab4.entity.Coordinate;
 import ru.konstantinpetrov.web.lab4.entity.User;
+import ru.konstantinpetrov.web.lab4.repository.AttemptRepository;
 import ru.konstantinpetrov.web.lab4.repository.UserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UsersServiceImpl implements UserService {
@@ -54,8 +59,9 @@ public class UsersServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+
     @Override
-    public void add(User user) {
+    public void addUser(User user) {
         try {
             this.userRepository.save(user);
         } catch (Exception e) {
@@ -82,4 +88,6 @@ public class UsersServiceImpl implements UserService {
         this.userRepository.deleteById(id);
         return client;
     }
+
+
 }

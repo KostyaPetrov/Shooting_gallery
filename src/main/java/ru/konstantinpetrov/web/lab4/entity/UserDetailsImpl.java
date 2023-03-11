@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class UserDetailsImpl implements UserDetails {
-    private long id;
 
     private String userName;
     private String password;
@@ -18,7 +17,6 @@ public class UserDetailsImpl implements UserDetails {
     private List<GrantedAuthority> authorities;
 
     public UserDetailsImpl(User user) {
-        this.id = user.getId();
         this.userName = user.getLogin();
         this.password = user.getPassword();
         this.active = true;
@@ -62,7 +60,4 @@ public class UserDetailsImpl implements UserDetails {
         return active;
     }
 
-    public long getId() {
-        return id;
-    }
 }
