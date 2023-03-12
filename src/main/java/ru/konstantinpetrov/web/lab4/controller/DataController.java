@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.konstantinpetrov.web.lab4.dtoLayer.CoordinateDTO;
 import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseDataDTO;
+import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseEnterDTO;
 import ru.konstantinpetrov.web.lab4.dtoLayer.ResponseHitDTO;
 import ru.konstantinpetrov.web.lab4.service.CoordinateService;
 
@@ -43,12 +44,15 @@ public class DataController {
     }
 
     @DeleteMapping(path = "all-data")
-    public HttpStatus deleteAll(Authentication authentication){
+    public ResponseEntity<ResponseEnterDTO> deleteAll(Authentication authentication){
         try {
             coordinateService.deleteAllByLogin(authentication.getName());
-            return HttpStatus.OK;
+            return new ResponseEntity<>(new ResponseEnterDTO(true),
+                    HttpStatus.OK);
+
         }catch (Exception e){
-            return HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>(new ResponseEnterDTO(false),
+                    HttpStatus.BAD_REQUEST);
         }
 
     }

@@ -15,6 +15,7 @@ import javax.persistence.*;
 public class Coordinate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
 
