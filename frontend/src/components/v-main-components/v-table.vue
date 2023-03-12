@@ -26,6 +26,8 @@ export default {
   mounted() {
     if (this.IS_AUTHED() && !this.TABLE_DATA().length)
       this.getAllData()
+    else
+      this.refreshData()
   },
   methods: {
     ...mapActions(['GET_ALL_DATA']),
