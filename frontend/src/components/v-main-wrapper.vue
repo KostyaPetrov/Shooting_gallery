@@ -10,11 +10,11 @@
             Group P32081
           </el-col>
           <el-col :span="8"><div class="grid-content" />
-            Option #2363
+            Option 2363
           </el-col>
         </el-row>
       </el-header>
-      <el-main>
+      <el-main class="main-content">
         <router-view/>
       </el-main>
     </el-container>
@@ -43,6 +43,10 @@ export default {
   background-color: #a7d1ff;
 }
 .header-content {
+  align-items: center;
+}
+
+.main-content{
   align-items: center;
 }
 </style>

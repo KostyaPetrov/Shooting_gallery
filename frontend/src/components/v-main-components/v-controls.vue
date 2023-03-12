@@ -6,7 +6,7 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item label="Ось Y" prop="y_axis">
+    <el-form-item label="Ось Y" prop="y_axis" class="input_Y">
       <el-input-number v-model="plotForm.y_axis" :min="-3" :max="3" :step="0.1" step-strictly></el-input-number>
     </el-form-item>
 
@@ -44,7 +44,7 @@ export default {
       console.log(parseInt(value))
       if (value === '') {
         callback(new Error('Необходимо указать значение оси Y'));
-      } else if (!parseInt(value)) {
+      } else if (!parseFloat(value, 10) && value!="0") {
         callback(new Error('Значение не число'));
       } else {
         callback();
@@ -64,15 +64,11 @@ export default {
         {value: '-5', label: '-5'},
       ],
       radius_options: [
+        {value: '5', label: '5'},
+        {value: '4', label: '4'},
         {value: '3', label: '3'},
         {value: '2', label: '2'},
         {value: '1', label: '1'},
-        {value: '0', label: '0'},
-        {value: '-1', label: '-1'},
-        {value: '-2', label: '-2'},
-        {value: '-3', label: '-3'},
-        {value: '-4', label: '-4'},
-        {value: '-5', label: '-5'},
       ],
       plotForm: {
         x_axis: '',
@@ -114,5 +110,7 @@ export default {
 </script>
 
 <style scoped>
-
+.input_Y{
+  align-items: center;
+}
 </style>

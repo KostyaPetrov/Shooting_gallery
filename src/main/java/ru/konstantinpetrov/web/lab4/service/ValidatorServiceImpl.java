@@ -15,7 +15,7 @@ public class ValidatorServiceImpl implements ValidatorService{
 
     private boolean validateY() { return (y >= -3) && (y <= 3); }
 
-    private boolean validateR() { return (r >=-5) && (r <= 3); }
+    private boolean validateR() { return (r >= 1) && (r <= 5); }
 
 
     @Override
@@ -30,7 +30,7 @@ public class ValidatorServiceImpl implements ValidatorService{
 
     @Override
     public Boolean validateHit() {
-        boolean firstQuarter= (x >= 0 && y >= 0 && y<=-2*x+1);
+        boolean firstQuarter= (x >= 0 && y >= 0 && y<=-2*x+r);
         boolean secondQuarter= (x>=0 && y<=0 && (x*x)+(y*y)<=(r/2)*(r/2));
         boolean fourthQuarter= (x<=0 && y>=0 && (-1*x)<=r && y<=(r/2));
         return firstQuarter || secondQuarter || fourthQuarter;

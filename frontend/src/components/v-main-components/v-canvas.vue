@@ -1,5 +1,6 @@
 <template>
   <canvas class="area" ref="graph" id="graph" @click="canvasClick" height="300" width="300"></canvas>
+
 </template>
 
 <script>
@@ -195,9 +196,9 @@ export default {
         y: event.offsetY * this.height / this.canvas.clientHeight | 0
       };
     },
-    preDrawPoints(data) {
+    preDrawPoints(data, radius = null) {
       for (const element of data) {
-        this.drawPointOnGraph(element.x_axis, element.y_axis, element.radius, element.is_hit)
+        this.drawPointOnGraph(element.x_axis, element.y_axis, radius || element.radius, element.is_hit)
       }
     },
     canvasClick(event) {

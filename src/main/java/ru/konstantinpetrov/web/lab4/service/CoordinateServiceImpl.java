@@ -44,7 +44,10 @@ public class CoordinateServiceImpl implements CoordinateService{
 
     @Override
     public ArrayList<Coordinate> getAllDataByLogin(String login) {
-        return this.attemptRepository.findAllByLogin(login);
+        System.out.println(login);
+        ArrayList<Coordinate> arrayList=new ArrayList<>();
+        arrayList=this.attemptRepository.findAllByLogin(login);
+        return arrayList;
     }
 
     @Override

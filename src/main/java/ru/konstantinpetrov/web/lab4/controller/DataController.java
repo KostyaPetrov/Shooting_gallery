@@ -39,6 +39,7 @@ public class DataController {
 
     @GetMapping(path="/all-data")
     public ResponseEntity<ResponseDataDTO> allData(Authentication authentication){
+        System.out.println("all-data get");
         return new ResponseEntity<>(new ResponseDataDTO(coordinateService.getAllDataByLogin(authentication.getName())),
                 HttpStatus.OK);
     }
