@@ -43,6 +43,7 @@ public class DataController {
                 HttpStatus.OK);
     }
 
+    @CrossOrigin
     @DeleteMapping(path = "all-data")
     public ResponseEntity<ResponseEnterDTO> deleteAll(Authentication authentication){
         try {

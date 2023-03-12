@@ -18,8 +18,8 @@
     </el-row>
 
     <el-row>
-      <el-col :span="4"><v-canvas @send-data="sendData"/></el-col>
-      <el-col :span="8"><v-controls ref="controls" @send-data="sendData"/></el-col>
+      <el-col :span="4"><v-canvas ref="canvas" @send-data="sendData"/></el-col>
+      <el-col :span="8"><v-controls ref="controls" @send-data="sendData" @clean-up-data="cleanUpData"/></el-col>
       <el-col :span="12"><v-table ref="table"/></el-col>
     </el-row>
   </div>
@@ -41,7 +41,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['SEND_DATA']),
+    ...mapActions(['SEND_DATA', 'DELETE_ALL_DATA']),
     ...mapGetters(['IS_AUTHED']),
     setIsSuccessSendData(value) {
       this.is_success_send_data = value
@@ -55,7 +55,29 @@ export default {
             this.$refs.controls.setIsLoading(false)
 
             if (result) {
+              this.$refs.canvas.drawPointOnGraph(x, y, radius, result.data.is_hit)
               this.$refs.table.refreshData()
+            } else {
+              self.setIsSuccessSendData(false)
+            }
+          },
+          () => {
+            this.$refs.controls.setIsLoading(false)
+            self.setIsSuccessSendData(false)
+          }
+        );
+    },
+    cleanUpData() {
+      const self = this
+
+      this.DELETE_ALL_DATA()
+        .then(
+          result => {
+            this.$refs.controls.setIsLoading(false)
+
+            if (result) {
+              this.$refs.canvas.initPlot()
+              this.$refs.table.deleteData()
             } else {
               self.setIsSuccessSendData(false)
             }

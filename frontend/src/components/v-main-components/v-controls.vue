@@ -7,7 +7,7 @@
     </el-form-item>
 
     <el-form-item label="Ось Y" prop="y_axis">
-      <el-input-number v-model="plotForm.y_axis" :min="-3" :max="3" :step="1" step-strictly></el-input-number>
+      <el-input-number v-model="plotForm.y_axis" :min="-3" :max="3" :step="0.1"></el-input-number>
     </el-form-item>
 
     <el-form-item label="Радиус" prop="radius">
@@ -28,7 +28,7 @@
 
       <el-col :span="12">
         <el-form-item>
-          <el-button type="danger" @click="reset()">Сброс</el-button>
+          <el-button type="danger" :loading="is_loading" @click="reset()">Сброс</el-button>
         </el-form-item>
       </el-col>
     </el-row>
@@ -81,10 +81,13 @@ export default {
       this.$data.is_loading = val
     },
     reset() {
+      this.$data.is_loading = true
+
       this.plotForm.x_axis = null
       this.plotForm.y_axis = null
       this.plotForm.radius = null
-      this.$data.is_loading = false
+
+      this.$emit('cleanUpData')
     },
     submitForm(formName) {
       this.$data.is_loading = true

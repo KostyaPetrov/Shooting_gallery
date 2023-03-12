@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex";
+
 export default {
   name: "v-canvas",
   data() {
@@ -37,26 +39,36 @@ export default {
     }
   },
   mounted() {
-    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.initPlot()
 
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = 'black';
-
-    this.drawXAxis()
-    this.drawYAxis()
-
-    this.drawRectangle(
-        this.origin - 2 * this.hatchGap, this.origin - this.hatchGap,
-        this.origin, this.origin
-    )
-    this.drawTriangle(
-        this.origin, this.origin - 2 * this.hatchGap,
-        this.origin + this.hatchGap, this.origin,
-        this.origin, this.origin,
-    )
-    this.drawCircularSector(this.origin, this.origin, this.hatchGap, 0.5 * Math.PI, 0)
+    if (this.IS_AUTHED() && !this.TABLE_DATA().length)
+      this.GET_ALL_DATA().then(result => {this.preDrawPoints(result.data)});
+    else
+      this.preDrawPoints(this.TABLE_DATA())
   },
   methods: {
+    ...mapGetters(['TABLE_DATA', 'IS_AUTHED']),
+    ...mapActions(['GET_ALL_DATA']),
+    initPlot() {
+      this.ctx.clearRect(0, 0, this.width, this.height);
+
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = 'black';
+
+      this.drawXAxis()
+      this.drawYAxis()
+
+      this.drawRectangle(
+          this.origin - 2 * this.hatchGap, this.origin - this.hatchGap,
+          this.origin, this.origin
+      )
+      this.drawTriangle(
+          this.origin, this.origin - 2 * this.hatchGap,
+          this.origin + this.hatchGap, this.origin,
+          this.origin, this.origin,
+      )
+      this.drawCircularSector(this.origin, this.origin, this.hatchGap, 0.5 * Math.PI, 0)
+    },
     drawXAxis() {
       this.ctx.beginPath();
       this.ctx.moveTo(this.width, this.origin);
@@ -183,12 +195,10 @@ export default {
         y: event.offsetY * this.height / this.canvas.clientHeight | 0
       };
     },
-    isHit(x, y, r) {
-      const isTriangleHit = x >= 0 && y >= 0 && y <= -2 * x + 1
-      const isRectangleHit = x >= 0 && y <= 0 && (x * x) + (y * y) <= (r / 2) * (r / 2)
-      const isCircularSectorHit = x <= 0 && y >= 0 && (-1 * x) <= r && y <= (r / 2)
-
-      return Boolean(isTriangleHit || isRectangleHit || isCircularSectorHit)
+    preDrawPoints(data) {
+      for (const element of data) {
+        this.drawPointOnGraph(element.x_axis, element.y_axis, element.radius, element.is_hit)
+      }
     },
     canvasClick(event) {
       const clickPosition = this.getMousePosition(event)
@@ -196,8 +206,6 @@ export default {
       const yCenter = Math.round((this.height / 2 - clickPosition.y) / (this.hatchGap * (2 / this.defaultRadius)) * 1000) / 1000
 
       this.$emit('sendData', xCenter, yCenter, this.defaultRadius)
-
-      this.drawPointOnGraph(xCenter, yCenter, this.defaultRadius, this.isHit(xCenter, yCenter, this.defaultRadius))
     }
   }
 }

@@ -1,7 +1,6 @@
 import { createStore } from 'vuex'
 import axios from "axios";
 
-// const CREATED_CODE = 201
 const SUCCESS_CODE = 200
 
 let store = createStore({
@@ -31,6 +30,9 @@ let store = createStore({
                 is_hit: item.is_hit,
             }))
         },
+        DELETE_TABLE_DATA (state) {
+            state.tableData = Array()
+        },
     },
     actions: {
         LOGIN({commit}, payload) {
@@ -38,7 +40,6 @@ let store = createStore({
                 username: payload.login,
                 password: payload.password
             }
-            console.log(payload)
             return new Promise((resolve, reject) => {
                 axios.post(process.env.VUE_APP_BACKEND_URL + '/login', {}, {
                     auth: auth_data
@@ -47,9 +48,7 @@ let store = createStore({
                     commit('SET_AUTH_DATA', auth_data)
                     resolve(response.status === SUCCESS_CODE)
                 })
-                .catch((response) => {
-                    console.log(response)
-                    console.log(response.response.data)
+                .catch(() => {
                     reject(false)
                 })
             })
@@ -69,18 +68,15 @@ let store = createStore({
                         commit('SET_AUTH_DATA', auth_data)
                         resolve({isSuccess: true, msg: ""})
                     } else {
-                        console.log(response.data)
                         resolve({isSuccess: false, msg: response.data})
                     }
                 })
                 .catch((response) => {
-                    console.log(response.response.data)
                     reject({isSuccess: false, msg: response.response.data})
                 })
             })
         },
         SEND_DATA({commit}, payload) {
-            console.log(this.state.authData)
             return new Promise((resolve, reject) => {
                 axios.post(process.env.VUE_APP_BACKEND_URL + '/compile', {
                     "x": payload.x,
@@ -89,10 +85,14 @@ let store = createStore({
                 }, {auth: this.state.authData})
                 .then((response) => {
                     if (response.status === SUCCESS_CODE){
-                        commit('ADD_TABLE_DATA', response.data)
+                        commit('ADD_TABLE_DATA', {
+                            "x": payload.x,
+                            "y": payload.y,
+                            "radius": payload.radius,
+                            "is_hit": response.data.is_hit
+                        })
                         resolve({isSuccess: true, data: response.data})
                     } else {
-                        console.log(response.data)
                         resolve({isSuccess: false, data: response.data})
                     }
                 })
@@ -103,7 +103,7 @@ let store = createStore({
         },
         GET_ALL_DATA({commit}) {
             return new Promise((resolve, reject) => {
-                axios.get(process.env.VUE_APP_BACKEND_URL + '/all-data', {auth: this.authData})
+                axios.get(process.env.VUE_APP_BACKEND_URL + '/all-data', {auth: this.state.authData})
                 .then((response) => {
                     if (response.status === SUCCESS_CODE){
                         commit('SET_TABLE_DATA', response.data.items)
@@ -112,10 +112,25 @@ let store = createStore({
                         resolve({isSuccess: false, data: this.state.tableData})
                     }
                 })
-                .catch((response) => {
-                    console.log(response.status + " - " + response.response.data)
+                .catch(() => {
                     reject({isSuccess: false, data: this.state.tableData})
                 })
+            })
+        },
+        DELETE_ALL_DATA({commit}) {
+            return new Promise((resolve, reject) => {
+                axios.delete(process.env.VUE_APP_BACKEND_URL + '/all-data', {auth: this.state.authData})
+                    .then((response) => {
+                        if (response.status === SUCCESS_CODE){
+                            commit('DELETE_TABLE_DATA')
+                            resolve({isSuccess: true})
+                        } else {
+                            resolve({isSuccess: false})
+                        }
+                    })
+                    .catch(() => {
+                        reject({isSuccess: false})
+                    })
             })
         },
     },

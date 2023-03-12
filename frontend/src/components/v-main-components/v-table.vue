@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="tableData" border style="width: 100%" height="300" @click="getAllData">
+  <el-table :data="tableData" border style="width: 100%" height="300">
     <el-table-column prop="x_axis" label="Ось X" />
     <el-table-column prop="y_axis" label="Ось Y" />
     <el-table-column prop="radius" label="Радиус"/>
@@ -24,11 +24,12 @@ export default {
     }
   },
   mounted() {
-    this.getAllData()
+    if (this.IS_AUTHED() && !this.TABLE_DATA().length)
+      this.getAllData()
   },
   methods: {
     ...mapActions(['GET_ALL_DATA']),
-    ...mapGetters(['TABLE_DATA']),
+    ...mapGetters(['TABLE_DATA', 'IS_AUTHED']),
     getAllData() {
       this.GET_ALL_DATA().then(
           result => {
@@ -41,6 +42,9 @@ export default {
     },
     refreshData() {
       this.tableData = this.TABLE_DATA()
+    },
+    deleteData() {
+      this.tableData = []
     }
   }
 }
