@@ -14,6 +14,9 @@ let store = createStore({
         SET_AUTH_DATA (state, auth_data) {
             state.authData = auth_data
         },
+        CLEAN_UP_LOGIN (state) {
+            state.authData = null
+        },
         ADD_TABLE_DATA (state, value) {
             state.tableData.push({
                 x_axis: value.x,
@@ -32,7 +35,7 @@ let store = createStore({
         },
         DELETE_TABLE_DATA (state) {
             state.tableData = Array()
-        },
+        }
     },
     actions: {
         LOGIN({commit}, payload) {
@@ -133,6 +136,12 @@ let store = createStore({
                     })
             })
         },
+        LOG_OUT({commit}) {
+            return new Promise(() => {
+                commit('CLEAN_UP_LOGIN')
+                commit('DELETE_TABLE_DATA')
+            })
+        }
     },
     getters: {
         IS_AUTHED(state) {

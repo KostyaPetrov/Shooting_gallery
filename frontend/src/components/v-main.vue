@@ -3,7 +3,7 @@
     <el-row type="flex" justify="end">
       <el-col :span="2">
         <router-link :to="{name: 'sign-in'}">
-          <el-link>Log out</el-link>
+          <el-link @click="cleanUpLogin">Log out</el-link>
         </router-link>
       </el-col>
     </el-row>
@@ -41,10 +41,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['SEND_DATA', 'DELETE_ALL_DATA']),
+    ...mapActions(['SEND_DATA', 'DELETE_ALL_DATA', 'LOG_OUT']),
     ...mapGetters(['IS_AUTHED']),
     setIsSuccessSendData(value) {
       this.is_success_send_data = value
+    },
+    cleanUpLogin() {
+      this.LOG_OUT().then()
     },
     sendData(x, y, radius) {
       const self = this
