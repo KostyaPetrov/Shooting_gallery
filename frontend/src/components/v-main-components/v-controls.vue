@@ -7,7 +7,7 @@
     </el-form-item>
 
     <el-form-item label="Ось Y" prop="y_axis">
-      <el-input-number v-model="plotForm.y_axis" :min="-3" :max="3" :step="0.1"></el-input-number>
+      <el-input-number v-model="plotForm.y_axis" :min="-3" :max="3" :step="0.1" step-strictly></el-input-number>
     </el-form-item>
 
     <el-form-item label="Радиус" prop="radius">
@@ -40,6 +40,16 @@
 export default {
   name: "v-controls",
   data() {
+    let validateYAxis = (rule, value, callback) => {
+      console.log(parseInt(value))
+      if (value === '') {
+        callback(new Error('Необходимо указать значение оси Y'));
+      } else if (!parseInt(value)) {
+        callback(new Error('Значение не число'));
+      } else {
+        callback();
+      }
+    };
     return {
       is_loading: false,
       x_axis_options: [
@@ -70,9 +80,9 @@ export default {
         radius: '',
       },
       rules: {
-        x_axis: [{ required: true, message: 'Необходимо указать значение оси X', trigger: 'change' }],
-        y_axis: [{ required: true, message: 'Необходимо указать значение оси Y', trigger: 'change' }],
-        radius: [{ required: true, message: 'Необходимо указать значение радиуса', trigger: 'change' }]
+        x_axis: [{ required: true, message: 'Необходимо указать значение оси X', trigger: 'blur' }],
+        y_axis: [{ required: true, validator: validateYAxis, trigger: 'blur' }],
+        radius: [{ required: true, message: 'Необходимо указать значение радиуса', trigger: 'blur' }]
       }
     }
   },
@@ -96,6 +106,7 @@ export default {
         if (valid) {
           this.$emit('sendData', this.plotForm.x_axis, this.plotForm.y_axis, this.plotForm.radius)
         }
+        else this.$data.is_loading = false
       });
     },
   }
