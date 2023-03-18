@@ -1,9 +1,15 @@
 import { createStore } from 'vuex'
+import VuexPersist from 'vuex-persist';
 import axios from "axios";
 
 const SUCCESS_CODE = 200
 
+const vuexLocal = new VuexPersist({
+    storage: window.localStorage
+})
+
 let store = createStore({
+    plugins: [vuexLocal.plugin],
     state () {
         return {
             authData: null,
